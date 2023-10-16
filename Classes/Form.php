@@ -2,10 +2,20 @@
 
 class Form {
 
+    
     public function __construct(private $data = [])
     {
         $this->data = $data;
     }
+
+    /**
+     * Retourne l'index courant posté dans le formulaire
+     */
+    private function getValue($index) 
+    {
+        return isset($this->data[$index]) ? $this->data[$index] : null;
+    }
+
 
     /**
      * Retourne un élément de formulaire input
@@ -22,7 +32,7 @@ class Form {
         $id == ($id == null) ? $name : $id ;
         $htmlLabel = '<p><label for="'. $id .'">'. $labelName .': </label><br>';
         $htmlType = 'type="'. $type .'"';
-        $htmlInput = '<input '. $htmlType .' name="'. $name .'" id="'. $id.'"' ;
+        $htmlInput = '<input '. $htmlType .' name="'. $name .'" id="'. $id.'" value="'. $this->getValue($name) .'"'  ;
 
         // code d'ajout d'autres attributs
         if (!empty($otherAttributes)) {
@@ -55,10 +65,12 @@ class Form {
         $htmlCloseSelect = '</select>';
         $htmlOptions =  '<option value="">De quelle fédération dépendez vous ?</option>';
 
+        $select = $this->getValue($name);
         // si le tableau des fédérations n'est pas vide on récupère les options et on les ajoute à la liste
         if(!empty($federations)) {
             foreach ($federations as $key => $federation) {
-                    $htmlOptions .= '<option value="'. $key .'">'. $federation .'</option>';
+                    $selected = ($select == $key)? 'selected' : '';
+                    $htmlOptions .= '<option value="'. $key .'" '. $selected.' >'. $federation .'</option>';
             }
         }
 
