@@ -1,6 +1,11 @@
 <!-- Injecter une classe formulaire - pour utiliser du php :) ! -->
 <?php 
-    require './Classes/Form.php';
+    require './Classes/Autoloader.php';
+    use Comiti\Autoloader;
+    use Comiti\Form;
+    
+    
+    Autoloader::register();
     $formulaire = new Form($_GET);
 ?>
 

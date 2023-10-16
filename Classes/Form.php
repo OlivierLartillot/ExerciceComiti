@@ -1,4 +1,6 @@
 <?php
+namespace Comiti;
+
 /**
  * Class Form
  * Permet de générer un formulaire très simplement
