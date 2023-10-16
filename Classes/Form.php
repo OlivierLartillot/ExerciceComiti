@@ -1,17 +1,28 @@
 <?php
-
+/**
+ * Class Form
+ * Permet de générer un formulaire très simplement
+ */
 class Form {
 
+    /**
+     * @var array données récupérées par le formulaire (généralement les tableaux post ou get)
+     */
+    private array $data;
     
-    public function __construct(private $data = [])
+    public function __construct(array $data = [])
     {
         $this->data = $data;
     }
 
+
     /**
-     * Retourne l'index courant posté dans le formulaire
+     * Retourne la valeur de l'index courant du formulaire
+     * 
+     * @param string L'index de la valeur du tableau que l'on veut récupérer
+     * @return string
      */
-    private function getValue($index) 
+    private function getValue(string $index) 
     {
         return isset($this->data[$index]) ? $this->data[$index] : null;
     }
@@ -25,8 +36,9 @@ class Form {
      * @param string $type Défini le type de l'input (ex:text), pas de type si null
      * @param int $id Défini l'id html de l'input, name si null
      * @param array $otherAttributes Possibilité d'ajouter d'autres attributs html plus spécifiques sous forme clé => valeur
+     * @return string 
      */
-    public function input($labelName, $name, $type=null,  $id=null, $otherAttributes = [])
+    public function input(string $labelName, string $name, string $type=null, string $id=null, array $otherAttributes = [])
     {
         // je laisse l'id optionnel, s'il ,n'est pas défini, il prendra la valeur du nom
         $id == ($id == null) ? $name : $id ;
@@ -46,6 +58,7 @@ class Form {
         return $htmlLabel . ' ' .$htmlInput;
     }
 
+
     /**
      * Retourne un élément de formulaire select 
      * 
@@ -53,8 +66,9 @@ class Form {
      * @param string $name Défini le nom du select
      * @param string $id Défini l'id html du select, name si null
      * @param array $federations Options du select sous forme [value => texte, value => texte...]
+     * @return string
      */
-    public function select($labelName, $name, $id=null,$federations = [])
+    public function select(string $labelName, string $name, string $id=null, array $federations = [])
     {
         // je laisse l'id optionnel, s'il ,n'est pas défini, il prendra la valeur du nom
         $id == ($id == null) ? $name : $id ;
@@ -78,13 +92,15 @@ class Form {
         return $htmlLabel . ' ' .$htmlSelect;
     }
 
+
     /**
      * Retourne l'input submit du formulaire 
      * 
      * @param string $value Défini le nom du bouton
+     * @return string
      */
-    public function submit($value=null){
-
+    public function submit(string $value=null)
+    {
         $valueText = ($value != null ) ? 'value="'. $value .'"' : '';
         return '<input type="submit" '. $valueText . '>' ; 
     }    
