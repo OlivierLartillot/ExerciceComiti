@@ -35,10 +35,11 @@ class Devis {
      * @param string $federation: value HTML liée à la fédération ex:"N" pour natation
      * @return float prix HT a payer
      */
-    function calculPrixHTAdherents(int $nombreAdherents, string $federation) :float
+    function calculPrixHTAdherents(int $nombreAdherents) :float
     {
 
-        if ($nombreAdherents < 101) {
+        var_dump($nombreAdherents);
+        if ( ($nombreAdherents >= 0) and ($nombreAdherents < 101) ) {
             $nouveauPrix = 10;
          } 
          else if ($nombreAdherents < 201) {
@@ -66,14 +67,8 @@ class Devis {
          else {
              
          }
-
-         //$totalAvecReduction = $this->pourcentagesDeReduction($federation, $nouveauPrix);
-
-         //$this->setPrixHT($totalAvecReduction);
  
          return round($nouveauPrix, 2);    
-
-
     }
 
     /**
