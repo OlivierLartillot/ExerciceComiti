@@ -6,6 +6,7 @@ class Devis {
     private float $prixHT;
     private array $errors = [];
     const TVA = 20/100;
+    private string $currency = '€';
 
     /**
      * Obtenir le prix HT
@@ -39,6 +40,17 @@ class Devis {
         }
         return $this->errors;
     }
+
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+    public function setCurrency($newCurrency)
+    {
+        $this->currency = $newCurrency;
+        return $this;
+    }
     
     /**
      * Prix HT à payer en fonction du nombre d'adhérents en prenant en compte les avantages dus a la fédération
@@ -47,9 +59,12 @@ class Devis {
      * @param string $federation: value HTML liée à la fédération ex:"N" pour natation
      * @return mixed prix HT a payer
      */
-    function calculPrixHTAdherents(int $nombreAdherents) :mixed
+    function calculPrixHTAdherents($nombreAdherents) :mixed
     {
-        
+        if ($nombreAdherents < 0) {
+            $this->setErrors(['Le nombre d\'adhérents doit être positif']);
+        }
+
         if ( ($nombreAdherents >= 0) and ($nombreAdherents < 101) ) {
             $nouveauPrix = 10;
         } 
@@ -75,10 +90,6 @@ class Devis {
                 $tarif = 1000;
                 $nouveauPrix = $tarif;
          }
-         
-        if ($nombreAdherents < 0) {
-            $this->setErrors(['Le nombre d\'adhérents doit être positif']);
-        }
          
          return round($nouveauPrix, 2);    
         }
