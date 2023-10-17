@@ -1,0 +1,123 @@
+<?php 
+namespace Comiti;
+
+class Devis {
+
+    private float $prixHT;
+    const TVA = 20/100;
+
+    /**
+     * Obtenir le prix HT
+     * 
+     * @return float
+     */
+    public function getPrixHT()
+    {
+        return $this->prixHT;
+    }
+
+    /**
+     * Modifier le prix HT
+     * 
+     * @param float $nouveauxPrix 
+     * @return float nouveau prix HT
+     */
+    public function setPrixHT(float $nouveauxPrix)
+    {
+        $this->prixHT = $nouveauxPrix;
+        return $this->prixHT;
+    }
+
+    /**
+     * Prix HT à payer en fonction du nombre d'adhérents en prenant en compte les avantages dus a la fédération
+     * 
+     * @param int $nombre d'adhérents
+     * @param string $federation: value HTML liée à la fédération ex:"N" pour natation
+     * @return float prix HT a payer
+     */
+    function calculPrixHTAdherents(int $nombreAdherents, string $federation) :float
+    {
+
+        if ($nombreAdherents < 101) {
+            $nouveauPrix = 10;
+         } 
+         else if ($nombreAdherents < 201) {
+            $tarif = 0.10;
+            $nouveauPrix = $nombreAdherents*$tarif;
+         }
+         else if ($nombreAdherents < 501) {
+            $tarif = 0.09;
+            $nouveauPrix = $nombreAdherents*$tarif;
+         }
+         else if ($nombreAdherents < 1001) {
+            $tarif = 0.08;
+            $nouveauPrix = $nombreAdherents*$tarif;    
+         }
+         else if ($nombreAdherents < 10001) {
+            $tarif = 70;
+            $nouveauPrix = (int)substr($nombreAdherents,0,1)*$tarif;
+         }
+         else if ($nombreAdherents > 10000) {
+            $tarif = 1000;
+            $nouveauPrix = $tarif;
+         }
+         else {
+             
+         }
+
+         //$totalAvecReduction = $this->pourcentagesDeReduction($federation, $nouveauPrix);
+
+         //$this->setPrixHT($totalAvecReduction);
+ 
+         return round($nouveauPrix, 2);    
+
+
+    }
+
+    /**
+     * Application de la réduction pour les ayants droits
+     * Nous insérons le cout adhérents précédemment calculé en HT
+     * et si l'entité à droit a cette réduction nous l'appliquons sinon on ressort avec le même cout
+     * 
+     * @param string $federation value HTML liée à la fédération ex:"N" pour natation
+     * @param int $coutAdherents
+     * @return float prix HT a payer arrondi à 2 chiffres après la virgule
+     */
+
+    private function pourcentagesDeReduction($federation, $coutAdherents)
+    {
+        if ($federation == "G") {
+            $prix = $coutAdherents - ($coutAdherents * 15 / 100);
+        } else if ($federation == "B"){
+            $prix = $coutAdherents - ($coutAdherents * 30 / 100);
+        } else {
+            $prix = $coutAdherents;
+        }
+        return round($prix, 2);
+        
+    }
+    
+    function calculPrixHTSection($federation, $nbreDeSections)
+    {
+        $prixSection = 5;
+
+        if ($federation == "N") {
+            $nbreDeSections -= 3;  
+        }
+
+        $prixTotalSection = ($nbreDeSections > 0) ? $nbreDeSections*$prixSection : 0; 
+        
+        return $prixTotalSection;
+    }
+
+    public function prixTTC($prixHT) {
+        return round($prixHT + ($prixHT*self::TVA), 2); 
+    }  
+
+
+
+
+
+
+
+}

@@ -2,11 +2,12 @@
 <?php 
     require './Classes/Autoloader.php';
     use Comiti\Autoloader;
+    use Comiti\Devis;
     use Comiti\Form;
-    
     
     Autoloader::register();
     $formulaire = new Form($_GET);
+    $devis = new Devis();
 ?>
 
 <!DOCTYPE html>
@@ -38,5 +39,8 @@
                     <?= $formulaire->submit('Voir mon Devis');?>
                 </div>
             </form>
+
+
+
     </body>
 </html>
