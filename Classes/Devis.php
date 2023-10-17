@@ -4,6 +4,7 @@ namespace Comiti;
 class Devis {
 
     private float $prixHT;
+    private array $errors = [];
     const TVA = 20/100;
 
     /**
@@ -27,56 +28,67 @@ class Devis {
         $this->prixHT = $nouveauxPrix;
         return $this->prixHT;
     }
-
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+    public function setErrors($errors =[])
+    {
+        foreach ($errors as $error){
+            $this->errors[] = $error;
+        }
+        return $this->errors;
+    }
+    
     /**
      * Prix HT à payer en fonction du nombre d'adhérents en prenant en compte les avantages dus a la fédération
      * 
      * @param int $nombre d'adhérents
      * @param string $federation: value HTML liée à la fédération ex:"N" pour natation
-     * @return float prix HT a payer
+     * @return mixed prix HT a payer
      */
-    function calculPrixHTAdherents(int $nombreAdherents) :float
+    function calculPrixHTAdherents(int $nombreAdherents) :mixed
     {
-
-        var_dump($nombreAdherents);
+        
         if ( ($nombreAdherents >= 0) and ($nombreAdherents < 101) ) {
             $nouveauPrix = 10;
-         } 
-         else if ($nombreAdherents < 201) {
+        } 
+        else if ($nombreAdherents < 201) {
             $tarif = 0.10;
             $nouveauPrix = $nombreAdherents*$tarif;
-         }
+        }
          else if ($nombreAdherents < 501) {
-            $tarif = 0.09;
+             $tarif = 0.09;
             $nouveauPrix = $nombreAdherents*$tarif;
          }
          else if ($nombreAdherents < 1001) {
-            $tarif = 0.08;
-            $nouveauPrix = $nombreAdherents*$tarif;    
+             $tarif = 0.08;
+             $nouveauPrix = $nombreAdherents*$tarif;    
+            }
+            else if ($nombreAdherents < 10001) {
+                $tarif = 70;
+                //1001 à 2000 == tranche de 1000 adhérents Mais on ne veut pas garder le 2 pour le substr .. d ou 2000 - 1 = 1999 on peut garder le 1*70
+                $nombreAdherentsPourSubs = $nombreAdherents - 1;
+                $nouveauPrix = (int)substr($nombreAdherentsPourSubs,0,1)*$tarif;
+            }
+            else if ($nombreAdherents > 10000) {
+                $tarif = 1000;
+                $nouveauPrix = $tarif;
          }
-         else if ($nombreAdherents < 10001) {
-            $tarif = 70;
-            //1001 à 2000 == tranche de 1000 adhérents Mais on ne veut pas garder le 2 pour le substr .. d ou 2000 - 1 = 1999 on peut garder le 1*70
-            $nombreAdherentsPourSubs = $nombreAdherents - 1;
-            $nouveauPrix = (int)substr($nombreAdherentsPourSubs,0,1)*$tarif;
-         }
-         else if ($nombreAdherents > 10000) {
-            $tarif = 1000;
-            $nouveauPrix = $tarif;
-         }
-         else {
-             
-         }
- 
+         
+        if ($nombreAdherents < 0) {
+            $this->setErrors(['Le nombre d\'adhérents doit être positif']);
+        }
+         
          return round($nouveauPrix, 2);    
-    }
-
-    /**
-     * Application de la réduction pour les ayants droits
-     * Nous insérons le cout adhérents précédemment calculé en HT
-     * et si l'entité à droit a cette réduction nous l'appliquons sinon on ressort avec le même cout
-     * 
-     * @param string $federation value HTML liée à la fédération ex:"N" pour natation
+        }
+        
+        /**
+         * Application de la réduction pour les ayants droits
+         * Nous insérons le cout adhérents précédemment calculé en HT
+         * et si l'entité à droit a cette réduction nous l'appliquons sinon on ressort avec le même cout
+         * 
+         * @param string $federation value HTML liée à la fédération ex:"N" pour natation
      * @param int $coutAdherents
      * @return float prix HT a payer arrondi à 2 chiffres après la virgule
      */
@@ -95,6 +107,11 @@ class Devis {
     
     function calculPrixHTSection($federation, $nbreDeSections, $nombreAdherents)
     {
+
+        if ($nbreDeSections < 0) {
+            $this->setErrors(['Le nombre de sections doit être positif']);
+        }
+
         $prixSection = 5;
 
         // Si ton club est natation tu as 3 sections offertes
@@ -104,6 +121,8 @@ class Devis {
 
         $prixTotalSection = ($nbreDeSections > 0) ? $nbreDeSections*$prixSection : 0; 
         
+
+
         return $prixTotalSection;
     }
 
