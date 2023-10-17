@@ -41,16 +41,27 @@
             </form>
 
 
-            <?php if ( 
-                        (isset($_GET) and 
-                        (!empty($_GET['nombreAdherents'])) and 
-                        (!empty($_GET['nombreSections']))  and
-                        (!empty($_GET['federations']))
-                        )):?>
+            <?php if ((isset($_GET) and 
+                      (!empty($_GET['nombreAdherents'])) and 
+                      (!empty($_GET['nombreSections']))  and
+                      (!empty($_GET['federations']))
+                    )):?>
                 <div>
                     <div>
-                        <?= $calculAdherentsHT = $devis->calculPrixHTAdherents($_GET['nombreAdherents'], $_GET['federations']) ?>e HT <br>
-                        <?= $devis->prixTTC($calculAdherentsHT) ?>e TTC
+                        Tarif Base Nombre d'adhérents: <?= $calculAdherentsHT = $devis->calculPrixHTAdherents($_GET['nombreAdherents'], $_GET['federations']) ?>e HT
+                        soit <?= $devis->prixTTC($calculAdherentsHT) ?>e TTC 
+                    </div>
+                    <div> 
+                        Réduction éventuelle due à la fédération:<?= $prixHTAvecReduction = $devis->pourcentagesDeReduction($_GET['federations'] ,$calculAdherentsHT) ?>e HT
+                    </div>
+                    <div>
+                        Prix Section: <?= $prixSectionHT = $devis->calculPrixHTSection( $_GET['federations'], $_GET['nombreSections'], $_GET['nombreAdherents'])?>e HT
+                    </div>
+                    <div>
+                        <?= $prixTotalHT = $devis->calculPrixTotal([$prixHTAvecReduction, $prixSectionHT])?>
+                    </div>
+                    <div>
+                        Tarif TTC = <?= $devis->prixTTC($prixTotalHT) ?>
                     </div>
                 </div>
             <?php endif ?>

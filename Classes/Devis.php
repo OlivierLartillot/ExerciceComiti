@@ -86,7 +86,7 @@ class Devis {
      * @return float prix HT a payer arrondi à 2 chiffres après la virgule
      */
 
-    private function pourcentagesDeReduction($federation, $coutAdherents)
+    public function pourcentagesDeReduction($federation, $coutAdherents)
     {
         if ($federation == "G") {
             $prix = $coutAdherents - ($coutAdherents * 15 / 100);
@@ -96,16 +96,16 @@ class Devis {
             $prix = $coutAdherents;
         }
         return round($prix, 2);
-        
     }
     
-    function calculPrixHTSection($federation, $nbreDeSections)
+    function calculPrixHTSection($federation, $nbreDeSections, $nombreAdherents)
     {
         $prixSection = 5;
 
-        if ($federation == "N") {
-            $nbreDeSections -= 3;  
-        }
+        // Si ton club est natation tu as 3 sections offertes
+        $nbreDeSections = ($federation == "N") ? $nbreDeSections-3 : $nbreDeSections;
+        // au dessus de 1000 une section est offerte
+        $nbreDeSections = ($nombreAdherents>1000) ? $nbreDeSections-1 : $nbreDeSections;
 
         $prixTotalSection = ($nbreDeSections > 0) ? $nbreDeSections*$prixSection : 0; 
         
@@ -116,6 +116,15 @@ class Devis {
         return round($prixHT + ($prixHT*self::TVA), 2); 
     }  
 
+    public function calculPrixTotal($totalPrestations = [])
+    {
+        $prixTotalHT = 0;
+        foreach ($totalPrestations as $prixPrestation) {
+            $prixTotalHT += $prixPrestation;
+        }
+
+        return $prixTotalHT;
+    }
 
 
 
