@@ -55,7 +55,9 @@ class Devis {
          }
          else if ($nombreAdherents < 10001) {
             $tarif = 70;
-            $nouveauPrix = (int)substr($nombreAdherents,0,1)*$tarif;
+            //1001 à 2000 == tranche de 1000 adhérents Mais on ne veut pas garder le 2 pour le substr .. d ou 2000 - 1 = 1999 on peut garder le 1*70
+            $nombreAdherentsPourSubs = $nombreAdherents - 1;
+            $nouveauPrix = (int)substr($nombreAdherentsPourSubs,0,1)*$tarif;
          }
          else if ($nombreAdherents > 10000) {
             $tarif = 1000;

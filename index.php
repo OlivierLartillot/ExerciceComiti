@@ -41,6 +41,20 @@
             </form>
 
 
+            <?php if ( 
+                        (isset($_GET) and 
+                        (!empty($_GET['nombreAdherents'])) and 
+                        (!empty($_GET['nombreSections']))  and
+                        (!empty($_GET['federations']))
+                        )):?>
+                <div>
+                    <div>
+                        <?= $calculAdherentsHT = $devis->calculPrixHTAdherents($_GET['nombreAdherents'], $_GET['federations']) ?>e HT <br>
+                        <?= $devis->prixTTC($calculAdherentsHT) ?>e TTC
+                    </div>
+                </div>
+            <?php endif ?>
+
 
     </body>
 </html>
