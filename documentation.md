@@ -11,6 +11,9 @@
 - :heavy_check_mark: test de l'exercice dans le même temps pour chaque fonctionnalité
 - :heavy_check_mark: ajout d'un peu de beauté à cette vilaine page ! Utilisation de bootstrap
 - :heavy_check_mark: Tests "manuels"
+- Bonus
+
+- feature: securité autour du formulaire('nous attendons un chiffre ou une fédération)
 
 # L'exercice:
 

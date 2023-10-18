@@ -20,7 +20,7 @@
     </head>
     <body>
         <div class="container text-center bg-primary-subtle mt-2 py-5 rounded">
-            <h1>Interface de Test de la fonction de devis</h1>
+            <h1 class="mb-5">Votre devis en ligne</h1>
 
             <form action="" method="get">
                 <div class="row justify-content-center">
