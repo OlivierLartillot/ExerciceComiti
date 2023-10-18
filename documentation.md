@@ -11,13 +11,17 @@
 - :heavy_check_mark: test de l'exercice dans le même temps pour chaque fonctionnalité
 - :heavy_check_mark: ajout d'un peu de beauté à cette vilaine page ! Utilisation de bootstrap
 - :heavy_check_mark: Tests "manuels"
+
 - Bonus:<br> 
 ->les sections vont de 1 a n (donc 1 section obligatoire)
 -> Numéro de section = le numéro de la section correspondant à un multiple du mois en cours = 3e
 -> offrir en priorité les sections à 5€
+- :heavy_check_mark: Bonus
+- :heavy_check_mark: Tests "manuels"
+
 - feature: securité autour du formulaire('nous attendons un chiffre ou une fédération)
 
-# L'exercice:
+## L'exercice:
 
 Calcul du prix :
 
@@ -41,6 +45,7 @@ comptée)
 ### 2. Le nombre de sections désirées
 - 5€/section/mois HT
 - une section est offerte si le club possède plus de 1000 adhérents
+
 | **FORMULAIRE**: nombre de sections désirées, Integer, input 
 
 
@@ -52,3 +57,12 @@ comptée)
 
 
 | **FORMULAIRE**: nombre de sections désirées, String, select  
+
+
+## Le Bonus:
+
+Au dernier moment, le chef de projet rajoute une fonctionnalité supplémentaire à 5 jours de la livraison du produit.
+
+Les sections vont porter des numéros allant de 1 à n, n étant le nombre de sections désirées. Si le numéro de la section est un multiple du mois en cours, alors son prix passe à 3€/mois HT.
+
+En cas de sections offertes, la consigne est d’offrir en priorité les sections à plein tarif, si applicable, avant d’offrir les sections à tarif préférentiel.
