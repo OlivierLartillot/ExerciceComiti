@@ -199,7 +199,7 @@ class Devis {
         // isMultiple - isNotmultiple
         $isMultiple = 0; $isNotMultiple = 0;
         for ($i = 1; $i <= $nbreDeSections; $i++) {
-            ($currentMonth % $i == 0) ? $isMultiple ++ : $isNotMultiple ++;
+            ($i % $currentMonth  == 0) ? $isMultiple ++ : $isNotMultiple ++;
         }
 
        // *** Initialisation du nombre de sections offertes: ***
