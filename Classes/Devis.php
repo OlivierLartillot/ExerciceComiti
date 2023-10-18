@@ -9,7 +9,7 @@ class Devis {
     private array $errors = [];
     const TVA = 20/100;
     private string $currency = '€';
-    private $frenchCurrentMonthInLetter;
+    private string $frenchCurrentMonthInLetter;
     private string $frenchCurrentMonthInNumber;
 
 
@@ -27,12 +27,10 @@ class Devis {
         $this->frenchCurrentMonthInLetter = ucfirst($fmt->format(new \DateTime()));
         $frenchCurrentMonthInNumber = new \DateTime('now');
         $this->frenchCurrentMonthInNumber = $frenchCurrentMonthInNumber->format('m');
-
     }
 
     public function getfrenchCurrentMonthInLetter(): string
     { 
-
         return $this->frenchCurrentMonthInLetter;
     }
 
@@ -182,13 +180,13 @@ class Devis {
         if ($nbreDeSectionsOffertes <= $isNotMultiple) {
             $isNotMultiple = $isNotMultiple-$nbreDeSectionsOffertes;
         } 
-        // sin y a plus de sections offertes que les notMultiple, il faut offrir les multiples
+        // si y a plus de sections offertes que les notMultiple, il faut offrir les multiples
         else {
             // on déduit les multiples et comme nbreDeSectionsOffertes >, $isMultiple == 0
-            $nbreDeSectionsOffertes = $nbreDeSectionsOffertes - $isNotMultiple;
+            $nbreDeSectionsOffertesRestantes = $nbreDeSectionsOffertes - $isNotMultiple;
             $isNotMultiple = 0;
             // on récupère le nbreDeSectionsOffertes restantes et si y a plus de sections offertes que de sections choisies, on remet à 0
-            $isMultiple = $isMultiple - $nbreDeSectionsOffertes;
+            $isMultiple = $isMultiple - $nbreDeSectionsOffertesRestantes;
             $isMultiple = ($isMultiple<=0) ? 0 : $isMultiple;
         }
 
@@ -207,6 +205,7 @@ class Devis {
             'nombretarifPleinSection' => $isNotMultiple,
             'tarifReduitSection' => $tarifReduitSection,
             'nombretarifReduitSection' => $isMultiple,
+            
         ];
     }
 

@@ -98,8 +98,8 @@
                                     <div class="col-12 text-start">
                                         Sections plein tarif
                                     </div>
-                                    <div class="col-8"> 
-                                            Prix Section <?= $nombretarifPleinSection ?> section(s) à 5€
+                                    <div class="col-8 text-start"> 
+                                        - <?= $nombretarifPleinSection ?> section(s) à 5€
                                     </div>
                                     <div class="col-4">       
                                         <?= $tarifPleinSectionHT  . $devis->getCurrency() ?>
@@ -107,8 +107,8 @@
                                     <div class="col-12 text-start">
                                         Sections tarif réduit
                                     </div>
-                                    <div class="col-8"> 
-                                            Prix Section <?= $nombretarifReduitSection ?> section(s) à 3€
+                                    <div class="col-8 text-start"> 
+                                        - <?= $nombretarifReduitSection ?> section(s) à 3€
                                     </div>
                                     <div class="col-4">       
                                         <?= $tarifReduitSectionHT  . $devis->getCurrency() ?>
