@@ -1,12 +1,45 @@
 <?php 
 namespace Comiti;
 
+use IntlDateFormatter;
+
 class Devis {
 
     private float $prixHT;
     private array $errors = [];
     const TVA = 20/100;
     private string $currency = '€';
+    private $frenchCurrentMonthInLetter;
+    private string $frenchCurrentMonthInNumber;
+
+
+    public function __construct()
+    {
+        $fmt = new IntlDateFormatter(
+            'fr_FR',
+            IntlDateFormatter::FULL,
+            IntlDateFormatter::NONE,
+            'Europe/Paris',
+            IntlDateFormatter::GREGORIAN,
+            'MMMM'
+        );
+       
+        $this->frenchCurrentMonthInLetter = ucfirst($fmt->format(new \DateTime()));
+        $frenchCurrentMonthInNumber = new \DateTime('now');
+        $this->frenchCurrentMonthInNumber = $frenchCurrentMonthInNumber->format('m');
+
+    }
+
+    public function getfrenchCurrentMonthInLetter(): string
+    { 
+
+        return $this->frenchCurrentMonthInLetter;
+    }
+
+    public function getFrenchCurrentMonthInNumber(): string
+    {
+        return $this->frenchCurrentMonthInNumber;
+    }
 
     /**
      * Obtenir le prix HT
@@ -116,25 +149,65 @@ class Devis {
         return round($prix, 2);
     }
     
-    function calculPrixHTSection($federation, $nbreDeSections, $nombreAdherents)
+    function calculPrixHTSection($federation, $nbreDeSections, $nombreAdherents):array
     {
 
         if ($nbreDeSections < 0) {
             $this->setErrors(['Le nombre de sections doit être positif']);
         }
 
-        $prixSection = 5;
+        // voici le mois en cours ex: 10 (pour octobre)
+        $currentMonth = $this->getFrenchCurrentMonthInNumber();
 
+        // calcul le nombre de sections multiples et non multiples
+        // isMultiple - isNotmultiple
+        $isMultiple = 0; $isNotMultiple = 0;
+        for ($i = 1; $i <= $nbreDeSections; $i++) {
+            ($currentMonth % $i == 0) ? $isMultiple ++ : $isNotMultiple ++;
+        }
+
+       // *** Initialisation du nombre de sections offertes: ***
+        $nbreDeSectionsOffertes = 0;
         // Si ton club est natation tu as 3 sections offertes
-        $nbreDeSections = ($federation == "N") ? $nbreDeSections-3 : $nbreDeSections;
+        $nbreDeSectionsOffertes = ($federation == "N") ? 3 : 0;
         // au dessus de 1000 une section est offerte
-        $nbreDeSections = ($nombreAdherents>1000) ? $nbreDeSections-1 : $nbreDeSections;
+        $nbreDeSectionsOffertes = ($nombreAdherents>1000) ? $nbreDeSectionsOffertes+1 : $nbreDeSectionsOffertes;
 
-        $prixTotalSection = ($nbreDeSections > 0) ? $nbreDeSections*$prixSection : 0; 
+        var_dump('nombre de sections choisies: ' . $nbreDeSections);
+        var_dump('nombre de sections offertes: ' .$nbreDeSectionsOffertes);
+        var_dump('Nombre de sections multiples à 3€: '. $isMultiple .' + nombre de sections non multiples à 5€: ' . $isNotMultiple);
+
+        // offre en priorité les "notMultiple" à 5e
+        // si le nbre total de sections offerte >= nombre de section non multiple, tu les deduis
+        if ($nbreDeSectionsOffertes <= $isNotMultiple) {
+            $isNotMultiple = $isNotMultiple-$nbreDeSectionsOffertes;
+        } 
+        // sin y a plus de sections offertes que les notMultiple, il faut offrir les multiples
+        else {
+            // on déduit les multiples et comme nbreDeSectionsOffertes >, $isMultiple == 0
+            $nbreDeSectionsOffertes = $nbreDeSectionsOffertes - $isNotMultiple;
+            $isNotMultiple = 0;
+            // on récupère le nbreDeSectionsOffertes restantes et si y a plus de sections offertes que de sections choisies, on remet à 0
+            $isMultiple = $isMultiple - $nbreDeSectionsOffertes;
+            $isMultiple = ($isMultiple<=0) ? 0 : $isMultiple;
+        }
+
+        var_dump('Apres deductions:');
+        var_dump('Nombre de sections multiples à 3€: '. $isMultiple .' + nombre de sections non multiples à 5€: ' . $isNotMultiple);
+
+        // calculons le tarif en fonction des sections restantes
+        $tarifPleinSection = $isNotMultiple * 5;
+        $tarifReduitSection = $isMultiple * 3; 
+
+        $prixTotalSection = $tarifPleinSection + $tarifReduitSection; 
         
-
-
-        return $prixTotalSection;
+        return [
+            'prixTotalSection' => $prixTotalSection, 
+            'tarifPleinSection' => $tarifPleinSection, 
+            'nombretarifPleinSection' => $isNotMultiple,
+            'tarifReduitSection' => $tarifReduitSection,
+            'nombretarifReduitSection' => $isMultiple,
+        ];
     }
 
     public function prixTTC($prixHT) {

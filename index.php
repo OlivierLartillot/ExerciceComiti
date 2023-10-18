@@ -1,4 +1,3 @@
-<!-- Injecter une classe formulaire - pour utiliser du php :) ! -->
 <?php 
     require './Classes/Autoloader.php';
     use Comiti\Autoloader;
@@ -20,15 +19,15 @@
     </head>
     <body>
         <div class="container text-center bg-primary-subtle mt-2 py-5 rounded">
-            <h1 class="mb-5">Votre devis en ligne</h1>
+            <h1 class="mb-5">Votre devis en ligne pour le mois en cours <br> (<?= $devis->getfrenchCurrentMonthInLetter()?>)</h1>
 
             <form action="" method="get">
                 <div class="row justify-content-center">
 
                     <div class="col-3">
                         <?= $formulaire->input('Nombre d\'adhérents', 'nombreAdherents', 'number', 'nombreAdherents',['min' => 0, 'class' => 'form-control']);?>
-                        <?= $formulaire->input('Nombre de sections désirées', 'nombreSections', 'number', 'nombreSections',['min' => 0, 'class' => 'form-control']);?>
-                        <?= $formulaire->select('Fédérations', 'federations', null,[
+                        <?= $formulaire->input('Nombre de sections désirées', 'nombreSections', 'number', 'nombreSections',['min' => 1, 'class' => 'form-control']);?>
+                        <?= $formulaire->select('Fédérations', 'federations', null, 'De quelle fédération dépendez-vous ?',[
                                 'B' => 'Basketball',
                                 'G' => 'Gymnastique',
                                 'N'=>'Natation',
@@ -41,7 +40,7 @@
                 </div>
             </form>
             <?php if ((isset($_GET['nombreAdherents']) and ((!empty($_GET['nombreAdherents']) or $_GET['nombreAdherents'] == 0) 
-                                                    and (!empty($_GET['nombreSections']) or $_GET['nombreSections'] == 0) 
+                                                    and (!empty($_GET['nombreSections'])) 
                                                     and (!empty($_GET['federations'])) ) 
                                 )):?>
 
@@ -49,7 +48,12 @@
                     $calculAdherentsHT = $devis->calculPrixHTAdherents($_GET['nombreAdherents']) ;
                     $prixAdherentsTTC = $devis->prixTTC($calculAdherentsHT);
                     $prixHTAvecReduction = $devis->pourcentagesDeReduction($_GET['federations'] ,$calculAdherentsHT);
-                    $prixSectionHT = $devis->calculPrixHTSection( $_GET['federations'], $_GET['nombreSections'], $_GET['nombreAdherents']); 
+                    $calculPrixHTSection = $devis->calculPrixHTSection( $_GET['federations'], $_GET['nombreSections'], $_GET['nombreAdherents']); 
+                    $prixSectionHT = $calculPrixHTSection['prixTotalSection'];
+                    $tarifPleinSectionHT =  $calculPrixHTSection['tarifPleinSection'];
+                    $nombretarifPleinSection = $calculPrixHTSection['nombretarifPleinSection'];
+                    $tarifReduitSectionHT =  $calculPrixHTSection['tarifReduitSection'];
+                    $nombretarifReduitSection = $calculPrixHTSection['nombretarifReduitSection'];
                     $prixTotalHT = $devis->calculPrixTotal([$prixHTAvecReduction, $prixSectionHT]);
                     $prixTTC =  $devis->prixTTC($prixTotalHT) ;
                     $devis->setCurrency('€');
@@ -71,39 +75,57 @@
                             <?php else:?>
                                 <p class="text-start fst-italic ">*Prix HT</p>
                                 <div class="row justify-content-between">
-                                        <div class="col-8">
-                                            Tarif Base Nombre d'adhérents: 
-                                        </div>
-                                        <div class="col-4">
-                                            <?= $calculAdherentsHT . $devis->getCurrency() ?>
-                                        </div>
-                                        <div class="col-8">
-                                            Tarif avec Réduction fédération:
-                                        </div>
-                                        <div class="col-4">
-                                            <?= $prixHTAvecReduction . $devis->getCurrency() ?>
-                                        </div>
-                                        <div class="col-8">
-                                            Prix Section: 
-                                        </div>
-                                        <div class="col-4">
-                                            <?= $prixSectionHT . $devis->getCurrency() ?>
-                                        </div>
-                                        <div class="col-8">
-                                            Tarif HT: 
-                                        </div>
-                                        <div class="col-4">
-                                            <?= $prixTotalHT . $devis->getCurrency() ?>
-                                        </div>
+                                    <div class="col-8">
+                                        Tarif Base Nombre d'adhérents: 
+                                    </div>
+                                    <div class="col-4">
+                                        <?= $calculAdherentsHT . $devis->getCurrency() ?>
+                                    </div>
+                                    <div class="col-8">
+                                        Tarif avec Réduction fédération:
+                                    </div>
+                                    <div class="col-4">
+                                        <?= $prixHTAvecReduction . $devis->getCurrency() ?>
+                                    </div>
+                                    <hr class="mt-3">
 
-                                        <hr class="mt-3">
-                                        
-                                        <div class="col-8">
-                                            Tarif TTC:  
-                                        </div>
-                                        <div class="col-4">
-                                            <?= $devis->prixTTC($prixTotalHT) . $devis->getCurrency()?>
-                                        </div>
+                                    <div class="col-8">
+                                        Prix Section: 
+                                    </div>
+                                    <div class="col-4">
+                                        <?= $prixSectionHT . $devis->getCurrency() ?>
+                                    </div>
+                                    <div class="col-12 text-start">
+                                        Sections plein tarif
+                                    </div>
+                                    <div class="col-8"> 
+                                            Prix Section <?= $nombretarifPleinSection ?> section(s) à 5€
+                                    </div>
+                                    <div class="col-4">       
+                                        <?= $tarifPleinSectionHT  . $devis->getCurrency() ?>
+                                    </div>
+                                    <div class="col-12 text-start">
+                                        Sections tarif réduit
+                                    </div>
+                                    <div class="col-8"> 
+                                            Prix Section <?= $nombretarifReduitSection ?> section(s) à 3€
+                                    </div>
+                                    <div class="col-4">       
+                                        <?= $tarifReduitSectionHT  . $devis->getCurrency() ?>
+                                    </div>
+                                    <hr class="mt-3">
+                                    <div class="col-8">
+                                        Tarif HT: 
+                                    </div>
+                                    <div class="col-4">
+                                        <?= $prixTotalHT . $devis->getCurrency() ?>
+                                    </div>
+                                    <div class="col-8">
+                                        Tarif TTC:  
+                                    </div>
+                                    <div class="col-4">
+                                        <?= $devis->prixTTC($prixTotalHT) . $devis->getCurrency()?>
+                                    </div>
                                 </div>
                             <?php endif ?>
                         </div>
