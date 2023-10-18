@@ -29,11 +29,19 @@ class Devis {
         $this->frenchCurrentMonthInNumber = $frenchCurrentMonthInNumber->format('m');
     }
 
+    /**
+     * Renvoie le mois en toute lettre en francais (ex Octobre)
+     * @return string
+     */
     public function getfrenchCurrentMonthInLetter(): string
     { 
         return $this->frenchCurrentMonthInLetter;
     }
 
+    /**
+     * Renvoie simplement le chiffre du mois en cours
+     * @return string
+     */
     public function getFrenchCurrentMonthInNumber(): string
     {
         return $this->frenchCurrentMonthInNumber;
@@ -41,7 +49,6 @@ class Devis {
 
     /**
      * Obtenir le prix HT
-     * 
      * @return float
      */
     public function getPrixHT()
@@ -60,11 +67,22 @@ class Devis {
         $this->prixHT = $nouveauxPrix;
         return $this->prixHT;
     }
-    public function getErrors()
+
+    /**
+     * Avoir accès plus facilement aux erreurs  rencontrées dans les méthodes
+     * @return array
+     */
+    public function getErrors():array
     {
         return $this->errors;
     }
-    public function setErrors($errors =[])
+
+    /**
+     * Permet de mettre à jour les erreurs recontrées adns les méthodes
+     * @param array $errors une entrée = texte de l'erreur (sans clé)
+     * @return array
+     */
+    public function setErrors($errors =[]):array
     {
         foreach ($errors as $error){
             $this->errors[] = $error;
@@ -72,15 +90,25 @@ class Devis {
         return $this->errors;
     }
 
-    public function getCurrency()
+    /**
+     * Permet de récupérer le sigle de la monnaie définie
+     * @return string
+     */
+    public function getCurrency():string
     {
         return $this->currency;
     }
 
-    public function setCurrency($newCurrency)
+    /**
+     * Permet de mettre à jour le sigle de la monnaie si jamais nous devons traiter une autre monnaie
+     * 
+     * @param string $newCurrency Le sigle de la monnaie (ex: $)
+     * @return string
+     */
+    public function setCurrency($newCurrency):string
     {
         $this->currency = $newCurrency;
-        return $this;
+        return $this->currency;
     }
     
     /**
@@ -125,12 +153,12 @@ class Devis {
          return round($nouveauPrix, 2);    
         }
         
-        /**
-         * Application de la réduction pour les ayants droits
-         * Nous insérons le cout adhérents précédemment calculé en HT
-         * et si l'entité à droit a cette réduction nous l'appliquons sinon on ressort avec le même cout
-         * 
-         * @param string $federation value HTML liée à la fédération ex:"N" pour natation
+    /**
+     * Application de la réduction pour les ayants droits
+     * Nous insérons le cout adhérents précédemment calculé en HT
+     * Si le club à droit a cette réduction nous l'appliquons sinon on ressort avec le même cout
+     * 
+     * @param string $federation value HTML liée à la fédération ex:"N" pour natation
      * @param int $coutAdherents
      * @return float prix HT a payer arrondi à 2 chiffres après la virgule
      */
@@ -147,7 +175,17 @@ class Devis {
         return round($prix, 2);
     }
     
-    function calculPrixHTSection($federation, $nbreDeSections, $nombreAdherents):array
+    /**
+     * Cette méthode renvoie le prix total du en fonction du nombre de sections mais aussi des infos associées
+     * Le tarif Plein à payer pour les Sections + le nombre de tarif pleins 
+     * Le tarif Reduit à payer pour les Sections + le nombre de tarif réduits 
+     * 
+     * @param string $federation
+     * @param int $nbreDeSections
+     * @param int $nombreAdherents
+     * @return array
+     */
+    function calculPrixHTSection(string $federation, int $nbreDeSections, int $nombreAdherents):array
     {
 
         if ($nbreDeSections < 0) {
@@ -205,15 +243,27 @@ class Devis {
             'nombretarifPleinSection' => $isNotMultiple,
             'tarifReduitSection' => $tarifReduitSection,
             'nombretarifReduitSection' => $isMultiple,
-            
         ];
     }
 
-    public function prixTTC($prixHT) {
+    /**
+     * Retourne le prix TTC à 20% d'un prix HT entré en input
+     * 
+     * @param int $prixHT Le prix HT à convertir
+     * @return float prix arrondi à 2 decimales
+     */
+    public function prixTTC($prixHT) :float
+    {
         return round($prixHT + ($prixHT*self::TVA), 2); 
     }  
 
-    public function calculPrixTotal($totalPrestations = [])
+    /**
+     * Renvoie le total HT de plusieurs tarif de prestations entrées dans le tableau
+     * 
+     * @param array chaque entrée représente la somme d'une prestation
+     * @return int prix total HT 
+     */
+    public function calculPrixTotal($totalPrestations = []):int
     {
         $prixTotalHT = 0;
         foreach ($totalPrestations as $prixPrestation) {
