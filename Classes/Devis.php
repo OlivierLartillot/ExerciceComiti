@@ -263,7 +263,7 @@ class Devis {
      * @param array chaque entrée représente la somme d'une prestation
      * @return int prix total HT 
      */
-    public function calculPrixTotal($totalPrestations = []):int
+    public function calculPrixTotal($totalPrestations = []):float
     {
         $prixTotalHT = 0;
         foreach ($totalPrestations as $prixPrestation) {
@@ -273,7 +273,16 @@ class Devis {
         return $prixTotalHT;
     }
 
-
+    /**
+     * Renvoie le prix entré en input * 12 
+     * 
+     * @param int $prix
+     * @return int prix * 12 
+     */
+    public function prixParAnnee($prix):float
+    {
+        return $prix*12;
+    }    
 
 
 

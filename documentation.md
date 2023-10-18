@@ -15,7 +15,6 @@
 ->les sections vont de 1 a n (donc 1 section obligatoire)
 -> Numéro de section = le numéro de la section correspondant à un multiple du mois en cours = 3e
 -> offrir en priorité les sections à 5€
-
 - feature: securité autour du formulaire('nous attendons un chiffre ou une fédération)
 
 # L'exercice:

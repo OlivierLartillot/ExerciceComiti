@@ -79,22 +79,17 @@
                                         Tarif Base Nombre d'adhérents: 
                                     </div>
                                     <div class="col-4">
-                                        <?= $calculAdherentsHT . $devis->getCurrency() ?>
+                                        <?= $devis->prixParAnnee($calculAdherentsHT) . $devis->getCurrency() ?>
                                     </div>
                                     <div class="col-8">
                                         Tarif avec Réduction fédération:
                                     </div>
                                     <div class="col-4">
-                                        <?= $prixHTAvecReduction . $devis->getCurrency() ?>
+                                        <?= $devis->prixParAnnee($prixHTAvecReduction) . $devis->getCurrency() ?>
                                     </div>
+
                                     <hr class="mt-3">
 
-                                    <div class="col-8">
-                                        Prix Section: 
-                                    </div>
-                                    <div class="col-4">
-                                        <?= $prixSectionHT . $devis->getCurrency() ?>
-                                    </div>
                                     <div class="col-12 text-start">
                                         Sections plein tarif
                                     </div>
@@ -102,7 +97,7 @@
                                         - <?= $nombretarifPleinSection ?> section(s) à 5€
                                     </div>
                                     <div class="col-4">       
-                                        <?= $tarifPleinSectionHT  . $devis->getCurrency() ?>
+                                        <?= $devis->prixParAnnee($tarifPleinSectionHT)  . $devis->getCurrency() ?>
                                     </div>
                                     <div class="col-12 text-start">
                                         Sections tarif réduit
@@ -111,20 +106,26 @@
                                         - <?= $nombretarifReduitSection ?> section(s) à 3€
                                     </div>
                                     <div class="col-4">       
-                                        <?= $tarifReduitSectionHT  . $devis->getCurrency() ?>
+                                        <?= $devis->prixParAnnee($tarifReduitSectionHT)  . $devis->getCurrency() ?>
+                                    </div>
+                                    <div class="col-8 text-start mt-3">
+                                        Prix Total Section: 
+                                    </div>
+                                    <div class="col-4 mt-3">
+                                        <?= $devis->prixParAnnee($prixSectionHT) . $devis->getCurrency() ?>
                                     </div>
                                     <hr class="mt-3">
                                     <div class="col-8">
                                         Tarif HT: 
                                     </div>
                                     <div class="col-4">
-                                        <?= $prixTotalHT . $devis->getCurrency() ?>
+                                        <?= $devis->prixParAnnee($prixTotalHT) . $devis->getCurrency() ?>
                                     </div>
                                     <div class="col-8">
                                         Tarif TTC:  
                                     </div>
                                     <div class="col-4">
-                                        <?= $devis->prixTTC($prixTotalHT) . $devis->getCurrency()?>
+                                        <?= $devis->prixParAnnee($devis->prixTTC($prixTotalHT)) . $devis->getCurrency()?>
                                     </div>
                                 </div>
                             <?php endif ?>
