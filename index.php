@@ -1,5 +1,6 @@
 <?php 
     require './Classes/Autoloader.php';
+    require_once './data/federations.php';
     use Comiti\Autoloader;
     use Comiti\Devis;
     use Comiti\Form;
@@ -9,22 +10,27 @@
     $formulaire = new Form($_GET);
     $devis = new Devis();
     // gestion des erreurs et validation
-    $errorsFormDevis = new ErrorsFormDevis();
+    $errorsFormDevisObject = new ErrorsFormDevis();
 
     // si on soumet le formulaire
     if (isset($_GET['submit'])){
-        // on regarde que le submit soit bien a true
-        $errorsFormDevis->checkSubmit($_GET['submit']);
-        // on regarde les erreurs eventuelles  
-        $checknombreAdherentsErrors = $errorsFormDevis->checkInputInteger($_GET['nombreAdherents'], 'nombreAdherents', 'nombre d\'adhérents');
-        // si c est bien un entier, on l enregistre dans $_GET sinon on conserve le tableau d'erreur
-        (intval($checknombreAdherentsErrors)) ? $_GET['nombreAdherents'] = $checknombreAdherentsErrors : $checknombreAdherentsErrors;
 
-        $checknombreSectionsErrors = $errorsFormDevis->checkInputInteger($_GET['nombreSections'], 'nombreSections', 'nombre de sections', 'excludeZero');
-        (intval($checknombreSectionsErrors)) ? $_GET['nombreSections'] = $checknombreSectionsErrors : $checknombreSectionsErrors;
+        // on s'assure que personne n'essaie de modifier l url
+        if ((!isset($_GET['nombreAdherents'])) or
+            (!isset($_GET['nombreSections'])) or
+            (!isset($_GET['federations'])) 
+            ) {
+            $errorsFormDevisObject->setErrors('SVP, veuillez utiliser le formulaire sans modifier l\'url !');
 
-        $federationsChoices = ['B', 'G', 'N', 'A'];
-        $checknombreSectionsErrors = $errorsFormDevis->checkInputSelect($_GET['federations'],$federationsChoices, 'federations', 'Fédérations');
+        } else {
+            // on regarde que le submit soit bien a true
+            $errorsFormDevisObject->checkSubmit($_GET['submit']);
+            // on regarde les erreurs eventuelles  
+            $checknombreAdherentsErrors = $errorsFormDevisObject->checkInputInteger($_GET['nombreAdherents'], 'nombreAdherents', 'nombre d\'adhérents');           
+            $checknombreSectionsErrors = $errorsFormDevisObject->checkInputInteger($_GET['nombreSections'], 'nombreSections', 'nombre de sections', 'excludeZero');  
+            $checkFederationsErrors = $errorsFormDevisObject->checkInputSelect($_GET['federations'],$federationsChoices, 'federations', 'Fédérations');
+            //si il y a des erreurs, nous n'aurons accès à aucune variable $_GET mais au tableau d'erreur !!!
+        }
     }
 
 ?>
@@ -47,35 +53,28 @@
                     <div class="col-3">
                         <?= $formulaire->input('Nombre d\'adhérents', 'nombreAdherents', 'number', 'nombreAdherents',['min' => 0, 'class' => 'form-control']);?>
                         <?= $formulaire->input('Nombre de sections désirées', 'nombreSections', 'number', 'nombreSections',['min' => 1, 'class' => 'form-control']);?>
-                        <?= $formulaire->select('Fédérations', 'federations', null, 'De quelle fédération dépendez-vous ?',[
-                                'B' => 'Basketball',
-                                'G' => 'Gymnastique',
-                                'N'=>'Natation',
-                                'A' => 'Autres Fédérations',
-                            ]);?>
+                        <?= $formulaire->select('Fédérations', 'federations', null, 'De quelle fédération dépendez-vous ?',$federationsChoices);?>
 
                         <?= $formulaire->submit('submit', 'Voir mon Devis', ["class" => "btn btn-primary mt-3"]);?>
                     </div>
                     
                 </div>
             </form>
-
+            
+            <!-- On affiche uniquement si on a cliqué sur submit -->
             <?php if (isset($_GET['submit'])):?>
-
-                <?php if (!empty($errorsFormDevis->getErrors())):?> 
-                    
+                <!-- Si il y a des erreurs dans le formulaire on les affiches -->
+                <?php if (!empty($errorsFormDevisObject->getErrors())):?> 
                     <div class="row justify-content-center">
-                        <div class="bg-danger col-8 text-center p-4 rounded shadow border border-black">
-                            <?php foreach ($errorsFormDevis->getErrors() as $error):?>
-
-
-                                <?= $error ?>  <br>
-
+                        <div class="bg-danger-subtle col-8 text-center p-4 rounded shadow border border-black">
+                            <h3 class="mb-3">Votre demande contient des erreurs :</h3>
+                            <?php foreach ($errorsFormDevisObject->getErrors() as $error):?>
+                                <span class="fw-bold">- <?= $error ?></span>  <br>
                             <?php endforeach ?>
                         </div>
                     </div>
+                <!-- Si il y n'a pas d'erreur on récupère et affiche les résultats -->
                 <?php else:
-                    /* Si il n'y a pas d'erreur, on récupàre les variables et on affiche le résultat */
                     $calculAdherentsHT = $devis->calculPrixHTAdherents($_GET['nombreAdherents']) ;
                     $prixAdherentsTTC = $devis->prixTTC($calculAdherentsHT);
                     $prixHTAvecReduction = $devis->pourcentagesDeReduction($_GET['federations'] ,$calculAdherentsHT);
@@ -95,67 +94,74 @@
                             <div class="card-body">
                                 <h5 class="card-title mb-3">Votre Devis</h5>
                                 
-                                    <p class="text-start fst-italic ">*Prix HT</p>
-                                    <div class="row justify-content-between">
-                                        <div class="col-8">
-                                            Tarif Base Nombre d'adhérents: 
-                                        </div>
-                                        <div class="col-4">
-                                            <?= $devis->prixParAnnee($calculAdherentsHT) . $devis->getCurrency() ?>
-                                        </div>
-                                        <div class="col-8">
-                                            Tarif avec Réduction fédération:
-                                        </div>
-                                        <div class="col-4">
-                                            <?= $devis->prixParAnnee($prixHTAvecReduction) . $devis->getCurrency() ?>
-                                        </div>
+                                <p class="text-start fst-italic ">*Prix HT</p>
+                                <div class="row justify-content-between">
 
-                                        <hr class="mt-3">
-
-                                        <div class="col-12 text-start">
-                                            Sections plein tarif
-                                        </div>
-                                        <div class="col-8 text-start"> 
-                                            - <?= $nombretarifPleinSection ?> section(s) à 5€
-                                        </div>
-                                        <div class="col-4">       
-                                            <?= $devis->prixParAnnee($tarifPleinSectionHT)  . $devis->getCurrency() ?>
-                                        </div>
-                                        <div class="col-12 text-start">
-                                            Sections tarif réduit
-                                        </div>
-                                        <div class="col-8 text-start"> 
-                                            - <?= $nombretarifReduitSection ?> section(s) à 3€
-                                        </div>
-                                        <div class="col-4">       
-                                            <?= $devis->prixParAnnee($tarifReduitSectionHT)  . $devis->getCurrency() ?>
-                                        </div>
-                                        <div class="col-8 text-start mt-3">
-                                            Prix Total Section: 
-                                        </div>
-                                        <div class="col-4 mt-3">
-                                            <?= $devis->prixParAnnee($prixSectionHT) . $devis->getCurrency() ?>
-                                        </div>
-                                        <hr class="mt-3">
-                                        <div class="col-8">
-                                            Tarif HT: 
-                                        </div>
-                                        <div class="col-4">
-                                            <?= $devis->prixParAnnee($prixTotalHT) . $devis->getCurrency() ?>
-                                        </div>
-                                        <div class="col-8">
-                                            Tarif TTC:  
-                                        </div>
-                                        <div class="col-4">
-                                            <?= $devis->prixParAnnee($devis->prixTTC($prixTotalHT)) . $devis->getCurrency()?>
-                                        </div>
+                                    <!-- zone adhérents -->
+                                    <div class="col-8">
+                                        Tarif Base Nombre d'adhérents: 
                                     </div>
-                                <?php endif ?>
+                                    <div class="col-4">
+                                        <?= $devis->prixParAnnee($calculAdherentsHT) . $devis->getCurrency() ?>
+                                    </div>
+                                    <div class="col-8">
+                                        Tarif avec Réduction fédération:
+                                    </div>
+                                    <div class="col-4">
+                                        <?= $devis->prixParAnnee($prixHTAvecReduction) . $devis->getCurrency() ?>
+                                    </div>
+
+                                    <hr class="mt-3">
+
+                                    <!-- zone sections -->
+                                    <div class="col-12 text-start">
+                                        Sections plein tarif
+                                    </div>
+                                    <div class="col-8 text-start"> 
+                                        - <?= $nombretarifPleinSection ?> section(s) à 5€
+                                    </div>
+                                    <div class="col-4">       
+                                        <?= $devis->prixParAnnee($tarifPleinSectionHT)  . $devis->getCurrency() ?>
+                                    </div>
+                                    <div class="col-12 text-start">
+                                        Sections tarif réduit
+                                    </div>
+                                    <div class="col-8 text-start"> 
+                                        - <?= $nombretarifReduitSection ?> section(s) à 3€
+                                    </div>
+                                    <div class="col-4">       
+                                        <?= $devis->prixParAnnee($tarifReduitSectionHT)  . $devis->getCurrency() ?>
+                                    </div>
+                                    <div class="col-8 text-start mt-3">
+                                        Prix Total Section: 
+                                    </div>
+                                    <div class="col-4 mt-3">
+                                        <?= $devis->prixParAnnee($prixSectionHT) . $devis->getCurrency() ?>
+                                    </div>
+
+                                    <hr class="mt-3">
+
+                                    <!-- zone sommes Tarifs -->
+                                    <div class="col-8">
+                                        Tarif HT: 
+                                    </div>
+                                    <div class="col-4">
+                                        <?= $devis->prixParAnnee($prixTotalHT) . $devis->getCurrency() ?>
+                                    </div>
+                                    <div class="col-8">
+                                        Tarif TTC:  
+                                    </div>
+                                    <div class="col-4">
+                                        <?= $devis->prixParAnnee($devis->prixTTC($prixTotalHT)) . $devis->getCurrency()?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                <!-- END IF ELSE erreur/affichage -->
                 <?php endif ?>
-            
+            <!-- END IF submit affiche les données -->
+            <?php endif ?>
         </div>
     </body>
 </html>
