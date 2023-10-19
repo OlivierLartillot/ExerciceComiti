@@ -11,6 +11,7 @@ class Form {
      * @var array données récupérées par le formulaire (généralement les tableaux post ou get)
      */
     private array $data;
+
     
     public function __construct(array $data = [])
     {
@@ -70,16 +71,16 @@ class Form {
      * @param array $federations Options du select sous forme [value => texte, value => texte...]
      * @return string
      */
-    public function select(string $labelName, string $name, string $id=null, array $federations = [])
+    public function select(string $labelName, string $name, string $id=null, string $choiceText,array $federations = [])
     {
         // je laisse l'id optionnel, s'il ,n'est pas défini, il prendra la valeur du nom
         $id == ($id == null) ? $name : $id ;
 
         // Construction du select/options html
         $htmlLabel = '<p><label for="'. $id .'">'. $labelName .': </label><br>';
-        $htmlOpenSelect = '<select name="'. $name .'" id="'. $id.'"'.' >';
+        $htmlOpenSelect = '<select name="'. $name .'" id="'. $id.'"'.' class="form-select">';
         $htmlCloseSelect = '</select>';
-        $htmlOptions =  '<option value="">De quelle fédération dépendez vous ?</option>';
+        $htmlOptions =  '<option value="nochoice">'. $choiceText.'</option>';
 
         $select = $this->getValue($name);
         // si le tableau des fédérations n'est pas vide on récupère les options et on les ajoute à la liste
