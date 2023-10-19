@@ -102,9 +102,9 @@ class Form {
      * @param string $value Défini le nom du bouton
      * @return string
      */
-    public function submit(string $buttonName=null, array $otherAttributes = [])
+    public function submit(string $nameHtml, string $buttonName=null, array $otherAttributes = [])
     {
-        $button = '<button type="submit"';
+        $button = '<button type="submit" value=true name="'. $nameHtml .'" ';
         // code d'ajout d'autres attributs
         if (!empty($otherAttributes)) {
             foreach ($otherAttributes as $key=>$attribute) {
