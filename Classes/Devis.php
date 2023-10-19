@@ -6,7 +6,6 @@ use IntlDateFormatter;
 class Devis {
 
     private float $prixHT;
-    private array $errors = [];
     const TVA = 20/100;
     private string $currency = '€';
     private string $frenchCurrentMonthInLetter;
@@ -69,28 +68,6 @@ class Devis {
     }
 
     /**
-     * Avoir accès plus facilement aux erreurs  rencontrées dans les méthodes
-     * @return array
-     */
-    public function getErrors():array
-    {
-        return $this->errors;
-    }
-
-    /**
-     * Permet de mettre à jour les erreurs recontrées adns les méthodes
-     * @param array $errors une entrée = texte de l'erreur (sans clé)
-     * @return array
-     */
-    public function setErrors($errors =[]):array
-    {
-        foreach ($errors as $error){
-            $this->errors[] = $error;
-        }
-        return $this->errors;
-    }
-
-    /**
      * Permet de récupérer le sigle de la monnaie définie
      * @return string
      */
@@ -114,15 +91,11 @@ class Devis {
     /**
      * Prix HT à payer en fonction du nombre d'adhérents en prenant en compte les avantages dus a la fédération
      * 
-     * @param int $nombre d'adhérents
-     * @param string $federation: value HTML liée à la fédération ex:"N" pour natation
+     * @param int $nombreAdherents
      * @return mixed prix HT a payer
      */
     function calculPrixHTAdherents($nombreAdherents) :mixed
     {
-        if ($nombreAdherents < 0) {
-            $this->setErrors(['Le nombre d\'adhérents doit être positif']);
-        }
 
         if ( ($nombreAdherents >= 0) and ($nombreAdherents < 101) ) {
             $nouveauPrix = 10;
@@ -187,10 +160,6 @@ class Devis {
      */
     function calculPrixHTSection(string $federation, int $nbreDeSections, int $nombreAdherents):array
     {
-
-        if ($nbreDeSections < 0) {
-            $this->setErrors(['Le nombre de sections doit être positif']);
-        }
 
         // voici le mois en cours ex: 10 (pour octobre)
         $currentMonth = $this->getFrenchCurrentMonthInNumber();
