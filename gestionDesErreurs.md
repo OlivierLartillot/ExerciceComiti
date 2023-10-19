@@ -18,7 +18,7 @@ On check dans la page uniquement **si le submit est envoyé** (présent)
 - soumettre sans envoyer de données: <a href="http://localhost/exerciceComiti/?nombreAdherents=&nombreSections=&federations=nochoice&submit=true">http://localhost/exerciceComiti/?nombreAdherents=&nombreSections=&federations=nochoice&submit=true</a>
 - modifier l'url en conservant le submit=true :<a href="http://localhost/exerciceComiti/?nomderations=nochoice&submit=true"> http://localhost/exerciceComiti/?nomderations=nochoice&submit=true</a>
 - ou encore modifier des parametres en mettant des caractères non attendus:
-    - <a href ="http://localhost/exerciceComiti/?nombreAdherents=-1&nombreSections=gfhffhh&federations=<b>B</b>&submit=rueeeeeee">http://localhost/exerciceComiti/?nombreAdherents=<u>**-1**</u>&nombreSections=<u>**fgfhfhfhh**</u>&federations=<u>**\<b>B\</b>**</u>&submit=<u>**trueeeeeeee**</u>"</a>
+    - <a href ="http://localhost/exerciceComiti/?nombreAdherents=-1&nombreSections=gfhffhh&federations=<b>B</b>&submit=rueeeeeee">.../?nombreAdherents=<u>**-1**</u>&nombreSections=<u>**fgfhfhfhh**</u>&federations=<u>**\<b>B\</b>**</u>&submit=<u>**trueeeeeeee**</u>"</a>
 
 
 ### Nombre d'adhérents
