@@ -18,8 +18,7 @@
 -> offrir en priorité les sections à 5€
 - :heavy_check_mark: Bonus
 - :heavy_check_mark: Tests "manuels"
-
-- feature: securité autour du formulaire('nous attendons un chiffre ou une fédération)
+- :heavy_check_mark: securité autour du formulaire('nous attendons un chiffre ou une fédération)
 
 ## L'exercice:
 
