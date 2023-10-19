@@ -12,7 +12,7 @@
 - :heavy_check_mark: ajout d'un peu de beauté à cette vilaine page ! Utilisation de bootstrap
 - :heavy_check_mark: Tests "manuels"
 
-- Bonus:<br> 
+- :heavy_check_mark: Bonus:<br> 
 ->les sections vont de 1 a n (donc 1 section obligatoire)
 -> Numéro de section = le numéro de la section correspondant à un multiple du mois en cours = 3e
 -> offrir en priorité les sections à 5€

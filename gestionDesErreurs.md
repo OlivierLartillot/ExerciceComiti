@@ -15,10 +15,10 @@ On check dans la page uniquement **si le submit est envoyé** (présent)
 
 ## Exemple d'url non valides
 
-- soumettre sans envoyer de données: http://localhost/exerciceComiti/?nombreAdherents=&nombreSections=&federations=nochoice&submit=true
-- modifier l'url en conservant le submit=true : http://localhost/exerciceComiti/?nomderations=nochoice&submit=true
+- soumettre sans envoyer de données: <a href="http://localhost/exerciceComiti/?nombreAdherents=&nombreSections=&federations=nochoice&submit=true">http://localhost/exerciceComiti/?nombreAdherents=&nombreSections=&federations=nochoice&submit=true</a>
+- modifier l'url en conservant le submit=true :<a href="http://localhost/exerciceComiti/?nomderations=nochoice&submit=true"> http://localhost/exerciceComiti/?nomderations=nochoice&submit=true</a>
 - ou encore modifier des parametres en mettant des caractères non attendus:
-    - http://localhost/exerciceComiti/?nombreAdherents=<u>**-1**</u>&nombreSections=<u>**fgfhfhfhh**</u>&federations=<u>**\<b>B\</b>**</u>&submit=<u>**trueeeeeeee**</u>
+    - <a href ="http://localhost/exerciceComiti/?nombreAdherents=-1&nombreSections=gfhffhh&federations=<b>B</b>&submit=rueeeeeee">http://localhost/exerciceComiti/?nombreAdherents=<u>**-1**</u>&nombreSections=<u>**fgfhfhfhh**</u>&federations=<u>**\<b>B\</b>**</u>&submit=<u>**trueeeeeeee**</u>"</a>
 
 
 ### Nombre d'adhérents
